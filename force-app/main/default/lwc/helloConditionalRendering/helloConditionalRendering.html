@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title="Conditional Rendering">
+        <div class="slds-var-m-around_medium">
+            <lightning-button variant="brand" label="Show Data" title="Show Data" onclick={handleClick}
+                class="slds-m-left_x-small">
+            </lightning-button>
+            <template if:true={isVisible}>
+                <div>Welcome In LWC</div>
+            </template>
+            <template if:false={isVisible}>
+                <div>Please click the button to see the data</div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
