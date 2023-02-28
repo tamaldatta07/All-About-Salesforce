@@ -10,6 +10,13 @@
             <template if:false={isVisible}>
                 <div>Please click the button to see the data</div>
             </template>
+            <lightning-input type="text" label="Write Hello" onekeyup={changeHandler}>
+            </lightning-input>
+            <template if:true={helloMethod}>
+                <div>You typed correctly</div>
+
+            </template>
+
         </div>
     </lightning-card>
 </template>
