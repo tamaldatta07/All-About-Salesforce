@@ -1,0 +1,11 @@
+<template>
+    <template if:true={user}>
+        <p>Current User: {user.Name}</p>
+        <p>Email: {user.Email}</p>
+        <p>Role: {user.UserRole.Name}</p>
+        <p>Last Login: {user.LastLoginDate}</p>
+    </template>
+    <template if:false={user}>
+        <p>Loading...</p>
+    </template>
+</template>
