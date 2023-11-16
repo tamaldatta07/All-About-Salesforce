@@ -1,6 +1,9 @@
 trigger CaseTrigger on Case (before insert) {
     CaseHelper.assignUniqueCaseNames(Trigger.New);
 }
+trigger CaseTrigger on Case (after update) {
+    CaseTriggerHandler.updateCaseOwner(Trigger.new, Trigger.oldMap);
+}
 
 // try{
 //     Custom_Settings__c cSettings = new Custom_Settings__c();
