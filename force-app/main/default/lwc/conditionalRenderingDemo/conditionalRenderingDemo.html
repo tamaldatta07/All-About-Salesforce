@@ -1,0 +1,14 @@
+<template>
+    <lightning-card title="Conditional rendering demo">
+        <div class="slds-var-m-around_medium">
+            <lightning-button variant="brand" label="Show Data" title="Show Data" onclick={handleClick}
+                class="slds-var-m-left_x-small"></lightning-button>
+
+            <template lwc:if={isVisible}>
+                <div>Welcome to Salesforce</div>
+            </template>
+
+
+        </div>
+    </lightning-card>
+</template>
