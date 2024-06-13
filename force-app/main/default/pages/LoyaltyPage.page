@@ -1,0 +1,298 @@
+<apex:page >
+
+    <style>
+        /* Global styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Page heading */
+        .page-heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Tab panel */
+        .tabPanel {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .tabPanel .ui-tabs-nav {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tabPanel .ui-tabs-nav li {
+            padding: 10px 15px;
+            margin: 0;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tabPanel .ui-tabs-nav li.ui-state-active {
+            background-color: #0056b3;
+            border-bottom: 2px solid #004085;
+        }
+
+        .tabPanel .ui-tabs-panel {
+            padding: 20px;
+        }
+
+        /* Table styling */
+        .table-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th, .table-container td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table-container th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .table-container tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .table-container tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Dropdown styling */
+        .dropdown-container {
+            margin-top: 10px;
+        }
+
+        .dropdown-container select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+    </style>
+
+    <div class="container">
+        <div class="page-heading">Loyalty</div>
+
+        <apex:tabPanel switchType="client" id="tabPanel" styleClass="tabPanel">
+            
+            <!-- Product Collector Tab -->
+            <apex:tab label="Product Collector" name="tabProductCollector">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Product 1</td>
+                                <td>Electronics</td>
+                                <td>$500</td>
+                            </tr>
+                            <tr>
+                                <td>Product 2</td>
+                                <td>Home  Kitchen</td>
+                                <td>$250</td>
+                            </tr>
+                            <tr>
+                                <td>Product 3</td>
+                                <td>Clothing</td>
+                                <td>$100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Dropdown Container -->
+                <div class="dropdown-container">
+                    <label for="productDropdown">Select Product:</label>
+                    <select id="productDropdown">
+                        <option value="">-- Select Product --</option>
+                    </select>
+                </div>
+            </apex:tab>
+            
+            <!-- Other Tabs (Account, Voucher, Collector, Notes) -->
+            <apex:tab label="Account" name="tabAccount">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Industry</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Account 1</td>
+                                <td>Technology</td>
+                                <td>123-456-7890</td>
+                            </tr>
+                            <tr>
+                                <td>Account 2</td>
+                                <td>Finance</td>
+                                <td>456-789-0123</td>
+                            </tr>
+                            <tr>
+                                <td>Account 3</td>
+                                <td>Healthcare</td>
+                                <td>789-012-3456</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </apex:tab>
+            
+            <apex:tab label="Voucher" name="tabVoucher">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Voucher Code</th>
+                                <th>Amount</th>
+                                <th>Expiration Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Voucher 1</td>
+                                <td>$50</td>
+                                <td>2024-12-31</td>
+                            </tr>
+                            <tr>
+                                <td>Voucher 2</td>
+                                <td>$100</td>
+                                <td>2024-11-30</td>
+                            </tr>
+                            <tr>
+                                <td>Voucher 3</td>
+                                <td>$25</td>
+                                <td>2024-10-31</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </apex:tab>
+            
+            <apex:tab label="Collector" name="tabCollector">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Collector Name</th>
+                                <th>Location</th>
+                                <th>Contact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Collector 1</td>
+                                <td>New York</td>
+                                <td>John Doe</td>
+                            </tr>
+                            <tr>
+                                <td>Collector 2</td>
+                                <td>San Francisco</td>
+                                <td>Jane Doe</td>
+                            </tr>
+                            <tr>
+                                <td>Collector 3</td>
+                                <td>Chicago</td>
+                                <td>Mike Smith</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </apex:tab>
+            
+            <apex:tab label="Notes" name="tabNotes">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Note 1</td>
+                                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+                                <td>2024-06-13</td>
+                            </tr>
+                            <tr>
+                                <td>Note 2</td>
+                                <td>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+                                <td>2024-06-12</td>
+                            </tr>
+                            <tr>
+                                <td>Note 3</td>
+                                <td>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</td>
+                                <td>2024-06-11</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </apex:tab>
+            
+        </apex:tabPanel>
+    </div>
+
+    <script>
+        // Function to fetch data from API and populate the dropdown
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('https://jsonplaceholder.typicode.com/posts')
+                .then(response => response.json())
+                .then(data => {
+                    var dropdown = document.getElementById('productDropdown');
+                    data.forEach(item => {
+                        var option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = item.title;
+                        dropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        });
+    </script>
+
+</apex:page>

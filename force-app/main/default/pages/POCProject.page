@@ -1,0 +1,94 @@
+<apex:page controller="DropdownController">
+    <apex:form id="form">
+        <style>
+            /* Basic styling */
+            .container {
+                width: 300px;
+                margin: 0 auto;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+            }
+            .dropdown-container {
+                margin-bottom: 20px;
+            }
+            select {
+                width: 100%;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                font-size: 14px;
+            }
+            .button-container {
+                text-align: center;
+                margin-top: 20px;
+            }
+            input[type="button"],
+            .apex-commandButton {
+                background-color: #007bff;
+                color: #c0c0c0;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+            input[type="button"]:hover,
+            .apex-commandButton:hover {
+                background-color: #c00000;
+            }
+            .output-text {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 16px;
+                color: #333;
+            }
+        </style>
+
+        <div class="container">
+            <div class="dropdown-container">
+                <!-- Dropdown Menu -->
+                <apex:selectList id="dropdown" size="1" value="{!selectedOption}">
+                    <apex:selectOptions value="{!visibleOptions}" />
+                </apex:selectList>
+            </div>
+
+            <div class="button-container">
+                <!-- Button to show more options -->
+                <apex:commandButton value="Show More" action="{!showMoreOptions}" rerender="form" styleClass="apex-commandButton"/>
+            </div>
+
+            <!-- Current selected value -->
+            <apex:outputText value="Selected Value: {!selectedOption}" styleClass="output-text" />
+        </div>
+    </apex:form>
+    <script>
+        // Function to reset dropdown to first 5 options after 10 seconds
+        setTimeout(function() {
+            resetDropdown();
+        }, 10000); // 10 seconds
+
+        function resetDropdown() {
+            var dropdown = document.getElementById('{!$Component.form.dropdown}');
+            for (var i = dropdown.options.length - 1; i >= 5; i--) {
+                dropdown.remove(i);
+            }
+        }
+
+        function updateSelectedOption(selectElement) {
+            var selectedValue = selectElement.value;
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.DropdownController.updateSelectedOption}',
+                selectedValue,
+                function(result, event) {
+                    if (event.status) {
+                        // Update the selected value in the form
+                        document.getElementById('{!$Component.selectedValue}').innerText = 'Selected Value: ' + selectedValue;
+                    }
+                }
+            );
+        }
+    </script>
+</apex:page>
