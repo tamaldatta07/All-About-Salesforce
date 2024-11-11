@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Account Details" icon-name="standard:account">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+
+        <template if:true={accountData}>
+            <div class="slds-m-around_medium">
+                <p><strong>Account Name:</strong> {accountData.accountName}</p>
+                <p><strong>Industry:</strong> {accountData.industry}</p>
+                <p><strong>Phone:</strong> {accountData.phone}</p>
+                <p><strong>Billing City:</strong> {accountData.billingCity}</p>
+                <p><strong>Billing State:</strong> {accountData.billingState}</p>
+            </div>
+        </template>
+
+        <template if:false={accountData}>
+            <p>No Account Details Available</p>
+        </template>
+    </lightning-card>
+</template>

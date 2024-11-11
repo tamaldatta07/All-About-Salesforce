@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title="Account and Contact Tree">
+        <div class="slds-m-around_medium">
+            <lightning-button label="Refresh" onclick={handleRefresh} icon-name="utility:refresh"></lightning-button>
+            <lightning-tree-grid columns={columns} data={treeData} key-field="accountId" hide-checkbox-column
+                onrowselection={handleRowSelection}>
+            </lightning-tree-grid>
+        </div>
+    </lightning-card>
+
+    <!-- Display Account Details when an account is selected -->
+    <template if:true={selectedAccountId}>
+        <c-account-details-component account-id={selectedAccountId}></c-account-details-component>
+    </template>
+</template>
