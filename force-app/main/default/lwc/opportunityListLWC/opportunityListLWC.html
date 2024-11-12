@@ -1,0 +1,16 @@
+<template>
+    <h5>Opportunities</h5>
+    <div>
+        <template for:each={opportunities} for:item="opportunity">
+            <div key={opportunity.id} class="opportunity-item">
+                <lightning-button label={opportunity.name} onclick={handleOpportunityClick} data-id={opportunity.id}>
+                </lightning-button>
+            </div>
+        </template>
+    </div>
+
+    <!-- Display selected Opportunity details -->
+    <template if:true={selectedOpportunity}>
+        <p><strong>Opportunity Name:</strong> {selectedOpportunity.name}</p>
+    </template>
+</template>

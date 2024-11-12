@@ -1,0 +1,18 @@
+<template>
+    <lightning-card title="Account Hierarchy">
+        <div class="slds-m-around_medium">
+            <lightning-tree-grid columns={columns} data={treeData} key-field="id" hide-checkbox-column
+                onrowselection={handleRowSelection}>
+            </lightning-tree-grid>
+        </div>
+    </lightning-card>
+
+    <!-- Conditionally display progress bar -->
+    <template if:true={showProgressBar}>
+        <lightning-card title="Progress Tracker">
+            <lightning-progress-bar value={progress} size="medium" label="Progress" variant="base">
+            </lightning-progress-bar>
+            <p>{progress}% of Contacts & Opportunities Viewed</p>
+        </lightning-card>
+    </template>
+</template>

@@ -1,0 +1,20 @@
+<template>
+    <h4>Contacts</h4>
+    <div>
+        <template for:each={contacts} for:item="contact">
+            <div key={contact.id} class="contact-item">
+                <lightning-button label={contact.name} onclick={handleContactClick} data-id={contact.id}>
+                </lightning-button>
+            </div>
+        </template>
+    </div>
+
+    <!-- Display selected Contact details -->
+    <template if:true={selectedContact}>
+        <p><strong>Name:</strong> {selectedContact.name}</p>
+        <p><strong>Email:</strong> {selectedContact.email}</p>
+
+        <!-- Child component to display Opportunities -->
+        <c-opportunity-list-l-w-c opportunities={selectedContact.opportunities}></c-opportunity-list-l-w-c>
+    </template>
+</template>
