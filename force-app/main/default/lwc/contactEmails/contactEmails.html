@@ -1,0 +1,44 @@
+<template>
+    <lightning-card title="Related Emails" icon-name="standard:email">
+
+        <!-- Header Actions -->
+        <div slot="actions">
+            <lightning-button label="New Email" icon-name="utility:email" class="slds-m-right_x-small"
+                onclick={handleComposeEmail}>
+            </lightning-button>
+            <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={handleRefresh}>
+            </lightning-button-icon>
+        </div>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium slds-is-relative">
+
+            <!-- Global Loading Spinner -->
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <!-- Search Bar -->
+            <div class="slds-m-bottom_small">
+                <lightning-input type="search" placeholder="Search Subject, From, or To..." onchange={handleSearch}
+                    variant="label-hidden">
+                </lightning-input>
+            </div>
+
+            <!-- Datatable with Infinite Scroll and Sorting -->
+            <div style="height: 350px;">
+                <lightning-datatable key-field="Id" data={emails} columns={columns} hide-checkbox-column="true"
+                    enable-infinite-loading={enableInfiniteLoading} onloadmore={loadMoreData} sorted-by={sortBy}
+                    sorted-direction={sortDirection} onsort={handleSort}>
+                </lightning-datatable>
+            </div>
+
+            <!-- Error State -->
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-m-top_small">
+                    Error loading emails: {error.body.message}
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>
