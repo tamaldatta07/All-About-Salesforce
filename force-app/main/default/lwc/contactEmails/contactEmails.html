@@ -1,7 +1,7 @@
 <template>
     <lightning-card title="Related Emails" icon-name="standard:email">
 
-        <!-- Header Actions: Only Refresh remains -->
+        <!-- Header Actions: Refresh Button -->
         <div slot="actions">
             <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={handleRefresh}>
             </lightning-button-icon>
@@ -9,6 +9,7 @@
 
         <div class="slds-p-horizontal_medium slds-p-bottom_medium slds-is-relative">
 
+            <!-- Global Loading Spinner -->
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
             </template>
@@ -20,17 +21,33 @@
                 </lightning-input>
             </div>
 
-            <!-- Datatable -->
-            <div style="height: 350px;">
-                <lightning-datatable key-field="Id" data={emails} columns={columns} hide-checkbox-column="true"
-                    enable-infinite-loading={enableInfiniteLoading} onloadmore={loadMoreData} sorted-by={sortBy}
-                    sorted-direction={sortDirection} onsort={handleSort}>
-                </lightning-datatable>
-            </div>
+            <!-- Datatable (Only shows if there is data in the array) -->
+            <template if:true={emails.length}>
+                <div style="height: 350px;">
+                    <lightning-datatable key-field="Id" data={emails} columns={columns} hide-checkbox-column="true"
+                        enable-infinite-loading={enableInfiniteLoading} onloadmore={loadMoreData} sorted-by={sortBy}
+                        sorted-direction={sortDirection} onsort={handleSort}>
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <!-- Empty State UX (Shows when no data is found and it is done loading) -->
+            <template if:false={emails.length}>
+                <template if:false={isLoading}>
+                    <div class="slds-illustration slds-illustration_small slds-p-around_large slds-text-align_center">
+                        <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="Empty State" />
+                        <div class="slds-text-longform slds-m-top_medium">
+                            <h3 class="slds-text-heading_medium">No related emails</h3>
+                            <p class="slds-text-body_regular">We couldn't find any emails linked to this contact or
+                                matching your search.</p>
+                        </div>
+                    </div>
+                </template>
+            </template>
 
             <!-- Error State -->
             <template if:true={error}>
-                <div class="slds-text-color_error slds-m-top_small">
+                <div class="slds-text-color_error slds-m-top_small slds-text-align_center">
                     Error loading emails: {error.body.message}
                 </div>
             </template>
