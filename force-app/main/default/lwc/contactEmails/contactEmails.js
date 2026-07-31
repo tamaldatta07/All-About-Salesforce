@@ -1,6 +1,4 @@
 import { LightningElement, api, track } from "lwc";
-import { NavigationMixin } from "lightning/navigation";
-import { encodeDefaultFieldValues } from "lightning/pageReferenceUtils";
 import getContactEmails from "@salesforce/apex/ContactEmailController.getContactEmails";
 
 const COLUMNS = [
@@ -32,8 +30,7 @@ const COLUMNS = [
   }
 ];
 
-export default class ContactEmails extends NavigationMixin(LightningElement) {
-  // Getter/Setter ensures Apex is only called after the recordId is assigned by the page
+export default class ContactEmails extends LightningElement {
   _recordId;
 
   @api
@@ -62,8 +59,6 @@ export default class ContactEmails extends NavigationMixin(LightningElement) {
   // Sort State
   sortBy = "MessageDate";
   sortDirection = "DESC";
-
-  // Debounce timer for search
   searchTimeout;
 
   // --- Core Data Fetching ---
@@ -84,7 +79,6 @@ export default class ContactEmails extends NavigationMixin(LightningElement) {
       searchKey: this.searchKey
     })
       .then((result) => {
-        // Process visual indicators and navigation links
         const processedData = result.map((record) => ({
           ...record,
           SubjectUrl: `/${record.Id}`,
@@ -95,7 +89,6 @@ export default class ContactEmails extends NavigationMixin(LightningElement) {
 
         this.emails = [...this.emails, ...processedData];
 
-        // Stop infinite loading if we fetched fewer records than the limit
         if (result.length < this.rowLimit) {
           this.enableInfiniteLoading = false;
         }
@@ -112,13 +105,10 @@ export default class ContactEmails extends NavigationMixin(LightningElement) {
   }
 
   // --- Feature Actions ---
-
-  // 1. Refresh Button Action
   handleRefresh() {
     this.loadEmails(true);
   }
 
-  // 2. Infinite Scrolling Action
   loadMoreData(event) {
     if (!this.enableInfiniteLoading) return;
 
@@ -127,16 +117,13 @@ export default class ContactEmails extends NavigationMixin(LightningElement) {
 
     this.rowOffset += this.rowLimit;
 
-    // Fetch next chunk and turn off datatable spinner
     this.loadEmails(false);
     target.isLoading = false;
   }
 
-  // 3. Search Action (with Debounce)
   handleSearch(event) {
     const searchValue = event.target.value;
 
-    // Debounce prevents spamming Apex while typing
     window.clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
       this.searchKey = searchValue;
@@ -144,32 +131,12 @@ export default class ContactEmails extends NavigationMixin(LightningElement) {
     }, 350);
   }
 
-  // 4. Sort Action
   handleSort(event) {
     const { fieldName: sortedBy, sortDirection } = event.detail;
 
-    // Datatable uses 'SubjectUrl' for fieldName, map it back to 'Subject' for Apex
     this.sortBy = sortedBy === "SubjectUrl" ? "Subject" : sortedBy;
     this.sortDirection = sortDirection;
 
     this.loadEmails(true);
-  }
-
-  // 5. Compose Email Action
-  handleComposeEmail() {
-    // Pre-populate the 'To' address with the Contact's Id
-    const defaultValues = encodeDefaultFieldValues({
-      WhoId: this.recordId
-    });
-
-    this[NavigationMixin.Navigate]({
-      type: "standard__quickAction",
-      attributes: {
-        actionName: "Global.SendEmail"
-      },
-      state: {
-        defaultFieldValues: defaultValues
-      }
-    });
   }
 }

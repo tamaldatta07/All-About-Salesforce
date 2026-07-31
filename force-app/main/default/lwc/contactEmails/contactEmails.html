@@ -1,18 +1,14 @@
 <template>
     <lightning-card title="Related Emails" icon-name="standard:email">
 
-        <!-- Header Actions -->
+        <!-- Header Actions: Only Refresh remains -->
         <div slot="actions">
-            <lightning-button label="New Email" icon-name="utility:email" class="slds-m-right_x-small"
-                onclick={handleComposeEmail}>
-            </lightning-button>
             <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={handleRefresh}>
             </lightning-button-icon>
         </div>
 
         <div class="slds-p-horizontal_medium slds-p-bottom_medium slds-is-relative">
 
-            <!-- Global Loading Spinner -->
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
             </template>
@@ -24,7 +20,7 @@
                 </lightning-input>
             </div>
 
-            <!-- Datatable with Infinite Scroll and Sorting -->
+            <!-- Datatable -->
             <div style="height: 350px;">
                 <lightning-datatable key-field="Id" data={emails} columns={columns} hide-checkbox-column="true"
                     enable-infinite-loading={enableInfiniteLoading} onloadmore={loadMoreData} sorted-by={sortBy}
