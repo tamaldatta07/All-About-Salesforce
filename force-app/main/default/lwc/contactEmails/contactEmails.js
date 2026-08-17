@@ -13,6 +13,7 @@ const COLUMNS = [
     },
     sortable: true
   },
+  { label: "Status", fieldName: "Status", type: "text", sortable: true },
   { label: "From", fieldName: "FromAddress", type: "email", sortable: true },
   { label: "To", fieldName: "ToAddress", type: "text", sortable: false },
   {
@@ -40,7 +41,6 @@ export default class ContactEmails extends LightningElement {
       this.loadEmails(true);
     }
   }
-
   get recordId() {
     return this._recordId;
   }
@@ -50,16 +50,31 @@ export default class ContactEmails extends LightningElement {
   error;
   isLoading = false;
 
-  // Pagination & Search State
+  // State
   rowLimit = 20;
   rowOffset = 0;
   enableInfiniteLoading = true;
   searchKey = "";
+  filterStartDate = null;
+  filterEndDate = null;
+  filterStatus = ""; // New state for status
 
-  // Sort State
   sortBy = "MessageDate";
   sortDirection = "DESC";
   searchTimeout;
+
+  // Status picklist options
+  get statusOptions() {
+    return [
+      { label: "All Statuses", value: "" },
+      { label: "New", value: "0" },
+      { label: "Read", value: "1" },
+      { label: "Replied", value: "2" },
+      { label: "Sent", value: "3" },
+      { label: "Forwarded", value: "4" },
+      { label: "Draft", value: "5" }
+    ];
+  }
 
   // --- Core Data Fetching ---
   loadEmails(clearExisting = false) {
@@ -76,7 +91,10 @@ export default class ContactEmails extends LightningElement {
       queryOffset: this.rowOffset,
       sortField: this.sortBy,
       sortDir: this.sortDirection,
-      searchKey: this.searchKey
+      searchKey: this.searchKey,
+      startDate: this.filterStartDate,
+      endDate: this.filterEndDate,
+      statusFilter: this.filterStatus // Pass status filter to Apex
     })
       .then((result) => {
         const processedData = result.map((record) => ({
@@ -104,7 +122,7 @@ export default class ContactEmails extends LightningElement {
       });
   }
 
-  // --- Feature Actions ---
+  // --- Actions ---
   handleRefresh() {
     this.loadEmails(true);
   }
@@ -129,6 +147,22 @@ export default class ContactEmails extends LightningElement {
       this.searchKey = searchValue;
       this.loadEmails(true);
     }, 350);
+  }
+
+  handleDateChange(event) {
+    const fieldName = event.target.name;
+    if (fieldName === "startDate") {
+      this.filterStartDate = event.target.value;
+    } else if (fieldName === "endDate") {
+      this.filterEndDate = event.target.value;
+    }
+
+    this.loadEmails(true);
+  }
+
+  handleStatusChange(event) {
+    this.filterStatus = event.detail.value;
+    this.loadEmails(true);
   }
 
   handleSort(event) {

@@ -1,7 +1,6 @@
 <template>
     <lightning-card title="Related Emails" icon-name="standard:email">
 
-        <!-- Header Actions: Refresh Button -->
         <div slot="actions">
             <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={handleRefresh}>
             </lightning-button-icon>
@@ -9,19 +8,49 @@
 
         <div class="slds-p-horizontal_medium slds-p-bottom_medium slds-is-relative">
 
-            <!-- Global Loading Spinner -->
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
             </template>
 
-            <!-- Search Bar -->
-            <div class="slds-m-bottom_small">
-                <lightning-input type="search" placeholder="Search Subject, From, or To..." onchange={handleSearch}
-                    variant="label-hidden">
-                </lightning-input>
-            </div>
+            <!-- Filters Area -->
+            <lightning-layout multiple-rows class="slds-m-bottom_small">
 
-            <!-- Datatable (Only shows if there is data in the array) -->
+                <!-- Text Search -->
+                <lightning-layout-item size="12" small-device-size="12" medium-device-size="4"
+                    class="slds-p-right_x-small slds-m-bottom_x-small">
+                    <lightning-input label="Keyword Search" type="search" placeholder="Search Subject, From, or To..."
+                        onchange={handleSearch}>
+                    </lightning-input>
+                </lightning-layout-item>
+
+                <!-- Status Filter -->
+                <lightning-layout-item size="12" small-device-size="12" medium-device-size="2"
+                    class="slds-p-right_x-small slds-m-bottom_x-small">
+                    <lightning-combobox label="Email Status" name="statusFilter" value={filterStatus}
+                        placeholder="All Statuses" options={statusOptions} onchange={handleStatusChange}>
+                    </lightning-combobox>
+                </lightning-layout-item>
+
+                <!-- Start Date -->
+                <lightning-layout-item size="6" small-device-size="6" medium-device-size="3"
+                    class="slds-p-right_x-small slds-m-bottom_x-small">
+                    <lightning-input label="Start Date" type="date" name="startDate" placeholder="Select Date"
+                        onchange={handleDateChange}>
+                    </lightning-input>
+                </lightning-layout-item>
+
+                <!-- End Date -->
+                <lightning-layout-item size="6" small-device-size="6" medium-device-size="3"
+                    class="slds-m-bottom_x-small">
+                    <lightning-input label="End Date" type="date" name="endDate" placeholder="Select Date"
+                        onchange={handleDateChange}>
+                    </lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+
+
+
+            <!-- Datatable -->
             <template if:true={emails.length}>
                 <div style="height: 350px;">
                     <lightning-datatable key-field="Id" data={emails} columns={columns} hide-checkbox-column="true"
@@ -31,7 +60,7 @@
                 </div>
             </template>
 
-            <!-- Empty State UX (Shows when no data is found and it is done loading) -->
+            <!-- Empty State UX -->
             <template if:false={emails.length}>
                 <template if:false={isLoading}>
                     <div class="slds-illustration slds-illustration_small slds-p-around_large slds-text-align_center">
@@ -39,13 +68,12 @@
                         <div class="slds-text-longform slds-m-top_medium">
                             <h3 class="slds-text-heading_medium">No related emails</h3>
                             <p class="slds-text-body_regular">We couldn't find any emails linked to this contact or
-                                matching your search.</p>
+                                matching your filters.</p>
                         </div>
                     </div>
                 </template>
             </template>
 
-            <!-- Error State -->
             <template if:true={error}>
                 <div class="slds-text-color_error slds-m-top_small slds-text-align_center">
                     Error loading emails: {error.body.message}
