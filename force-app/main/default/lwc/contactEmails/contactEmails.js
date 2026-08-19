@@ -1,5 +1,6 @@
 import { LightningElement, api, track } from "lwc";
 import getContactEmails from "@salesforce/apex/ContactEmailController.getContactEmails";
+import getTotalEmailCount from "@salesforce/apex/ContactEmailController.getTotalEmailCount"; // Import new method
 
 const COLUMNS = [
   {
@@ -50,20 +51,24 @@ export default class ContactEmails extends LightningElement {
   error;
   isLoading = false;
 
-  // State
   rowLimit = 20;
   rowOffset = 0;
   enableInfiniteLoading = true;
   searchKey = "";
   filterStartDate = null;
   filterEndDate = null;
-  filterStatus = ""; // New state for status
+  filterStatus = "";
+  totalEmailCount = 0; // New tracking variable
 
   sortBy = "MessageDate";
   sortDirection = "DESC";
   searchTimeout;
 
-  // Status picklist options
+  // Dynamic title logic
+  get cardTitle() {
+    return `Related Emails (${this.totalEmailCount})`;
+  }
+
   get statusOptions() {
     return [
       { label: "All Statuses", value: "" },
@@ -71,18 +76,35 @@ export default class ContactEmails extends LightningElement {
       { label: "Read", value: "1" },
       { label: "Replied", value: "2" },
       { label: "Sent", value: "3" },
-      { label: "Forwarded", value: "4" },
-      { label: "Draft", value: "5" }
+      { label: "Forwarded", value: "4" }
     ];
   }
 
-  // --- Core Data Fetching ---
+  // New function to fetch count
+  fetchTotalCount() {
+    getTotalEmailCount({
+      contactId: this.recordId,
+      searchKey: this.searchKey,
+      startDate: this.filterStartDate,
+      endDate: this.filterEndDate,
+      statusFilter: this.filterStatus
+    })
+      .then((count) => {
+        this.totalEmailCount = count;
+      })
+      .catch((error) => {
+        console.error("Error retrieving count", error);
+        this.totalEmailCount = 0;
+      });
+  }
+
   loadEmails(clearExisting = false) {
     if (clearExisting) {
       this.emails = [];
       this.rowOffset = 0;
       this.enableInfiniteLoading = true;
       this.isLoading = true;
+      this.fetchTotalCount(); // Fetch count whenever we apply a new filter or refresh
     }
 
     getContactEmails({
@@ -94,7 +116,7 @@ export default class ContactEmails extends LightningElement {
       searchKey: this.searchKey,
       startDate: this.filterStartDate,
       endDate: this.filterEndDate,
-      statusFilter: this.filterStatus // Pass status filter to Apex
+      statusFilter: this.filterStatus
     })
       .then((result) => {
         const processedData = result.map((record) => ({
@@ -122,7 +144,6 @@ export default class ContactEmails extends LightningElement {
       });
   }
 
-  // --- Actions ---
   handleRefresh() {
     this.loadEmails(true);
   }

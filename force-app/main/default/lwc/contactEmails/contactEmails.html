@@ -1,5 +1,6 @@
 <template>
-    <lightning-card title="Related Emails" icon-name="standard:email">
+    <!-- Card title now dynamically binds to the JS getter -->
+    <lightning-card title={cardTitle} icon-name="standard:email">
 
         <div slot="actions">
             <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={handleRefresh}>
@@ -14,8 +15,6 @@
 
             <!-- Filters Area -->
             <lightning-layout multiple-rows class="slds-m-bottom_small">
-
-                <!-- Text Search -->
                 <lightning-layout-item size="12" small-device-size="12" medium-device-size="4"
                     class="slds-p-right_x-small slds-m-bottom_x-small">
                     <lightning-input label="Keyword Search" type="search" placeholder="Search Subject, From, or To..."
@@ -23,7 +22,6 @@
                     </lightning-input>
                 </lightning-layout-item>
 
-                <!-- Status Filter -->
                 <lightning-layout-item size="12" small-device-size="12" medium-device-size="2"
                     class="slds-p-right_x-small slds-m-bottom_x-small">
                     <lightning-combobox label="Email Status" name="statusFilter" value={filterStatus}
@@ -31,7 +29,6 @@
                     </lightning-combobox>
                 </lightning-layout-item>
 
-                <!-- Start Date -->
                 <lightning-layout-item size="6" small-device-size="6" medium-device-size="3"
                     class="slds-p-right_x-small slds-m-bottom_x-small">
                     <lightning-input label="Start Date" type="date" name="startDate" placeholder="Select Date"
@@ -39,7 +36,6 @@
                     </lightning-input>
                 </lightning-layout-item>
 
-                <!-- End Date -->
                 <lightning-layout-item size="6" small-device-size="6" medium-device-size="3"
                     class="slds-m-bottom_x-small">
                     <lightning-input label="End Date" type="date" name="endDate" placeholder="Select Date"
@@ -47,8 +43,6 @@
                     </lightning-input>
                 </lightning-layout-item>
             </lightning-layout>
-
-
 
             <!-- Datatable -->
             <template if:true={emails.length}>
