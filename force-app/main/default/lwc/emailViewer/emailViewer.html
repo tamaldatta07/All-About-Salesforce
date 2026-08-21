@@ -1,0 +1,51 @@
+<template>
+    <lightning-card title="Related Emails" icon-name="standard:email">
+
+        <!-- Refresh Button positioned at the top right -->
+        <lightning-button-icon icon-name="utility:refresh" slot="actions" onclick={handleRefresh}
+            alternative-text="Refresh Table">
+        </lightning-button-icon>
+
+        <div class="slds-p-around_medium">
+
+            <!-- Filter Section -->
+            <lightning-layout multiple-rows class="slds-m-bottom_medium">
+                <lightning-layout-item size="12" small-device-size="6" medium-device-size="3"
+                    class="slds-p-right_small">
+                    <lightning-input type="search" label="Search (Subject, CC, From)" value={searchKey}
+                        onchange={handleSearchChange}></lightning-input>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="12" small-device-size="6" medium-device-size="3"
+                    class="slds-p-right_small">
+                    <lightning-combobox label="Email Status" value={statusFilter} options={statusOptions}
+                        onchange={handleFilterChange} data-field="status"></lightning-combobox>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="12" small-device-size="6" medium-device-size="3"
+                    class="slds-p-right_small">
+                    <lightning-input type="date" label="Start Date" value={startDate} onchange={handleFilterChange}
+                        data-field="startDate"></lightning-input>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="12" small-device-size="6" medium-device-size="3">
+                    <lightning-input type="date" label="End Date" value={endDate} onchange={handleFilterChange}
+                        data-field="endDate"></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+
+            <!-- Data Table Section -->
+            <div style="height: 300px;">
+                <lightning-datatable key-field="Id" data={tableData} columns={columns} hide-checkbox-column>
+                </lightning-datatable>
+            </div>
+
+            <template if:true={errorMessage}>
+                <div class="slds-m-top_small slds-text-color_error">
+                    Error loading emails: {errorMessage}
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>
