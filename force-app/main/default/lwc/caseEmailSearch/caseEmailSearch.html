@@ -1,0 +1,17 @@
+<template>
+    <lightning-card title="Search Cases & Emails" icon-name="standard:search">
+        <div class="slds-var-m-around_medium">
+            <!-- Search Bar -->
+            <lightning-input type="search" label="Search Report Data"
+                placeholder="Type a case number, subject, email address..." onchange={handleSearch}
+                class="slds-var-m-bottom_medium">
+            </lightning-input>
+
+            <!-- Data Table -->
+            <div style="height: 400px;">
+                <lightning-datatable key-field="Id" data={filteredData} columns={columns} hide-checkbox-column>
+                </lightning-datatable>
+            </div>
+        </div>
+    </lightning-card>
+</template>

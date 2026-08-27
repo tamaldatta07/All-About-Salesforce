@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from "lwc";
 import getContactEmails from "@salesforce/apex/ContactEmailController.getContactEmails";
-import getTotalEmailCount from "@salesforce/apex/ContactEmailController.getTotalEmailCount"; // Import new method
+import getTotalEmailCount from "@salesforce/apex/ContactEmailController.getTotalEmailCount";
 
 const COLUMNS = [
   {
@@ -11,6 +11,17 @@ const COLUMNS = [
     cellAttributes: {
       iconName: { fieldName: "DirectionIcon" },
       iconPosition: "left"
+    },
+    sortable: true
+  },
+  // New Case No Column
+  {
+    label: "Case No",
+    fieldName: "CaseUrl",
+    type: "url",
+    typeAttributes: {
+      label: { fieldName: "CaseNumberText" },
+      target: "_blank"
     },
     sortable: true
   },
@@ -58,13 +69,12 @@ export default class ContactEmails extends LightningElement {
   filterStartDate = null;
   filterEndDate = null;
   filterStatus = "";
-  totalEmailCount = 0; // New tracking variable
+  totalEmailCount = 0;
 
   sortBy = "MessageDate";
   sortDirection = "DESC";
   searchTimeout;
 
-  // Dynamic title logic
   get cardTitle() {
     return `Related Emails (${this.totalEmailCount})`;
   }
@@ -80,7 +90,6 @@ export default class ContactEmails extends LightningElement {
     ];
   }
 
-  // New function to fetch count
   fetchTotalCount() {
     getTotalEmailCount({
       contactId: this.recordId,
@@ -104,7 +113,7 @@ export default class ContactEmails extends LightningElement {
       this.rowOffset = 0;
       this.enableInfiniteLoading = true;
       this.isLoading = true;
-      this.fetchTotalCount(); // Fetch count whenever we apply a new filter or refresh
+      this.fetchTotalCount();
     }
 
     getContactEmails({
@@ -119,13 +128,22 @@ export default class ContactEmails extends LightningElement {
       statusFilter: this.filterStatus
     })
       .then((result) => {
-        const processedData = result.map((record) => ({
-          ...record,
-          SubjectUrl: `/${record.Id}`,
-          DirectionIcon: record.Incoming
-            ? "utility:arrow_left"
-            : "utility:arrow_right"
-        }));
+        const processedData = result.map((record) => {
+          // Check if the email is linked to a Case
+          const hasCase = !!record.ParentId;
+
+          return {
+            ...record,
+            SubjectUrl: `/${record.Id}`,
+            DirectionIcon: record.Incoming
+              ? "utility:arrow_left"
+              : "utility:arrow_right",
+            // Create URL and flattened text for the Case column
+            CaseUrl: hasCase ? `/${record.ParentId}` : "",
+            CaseNumberText:
+              hasCase && record.Parent ? record.Parent.CaseNumber : ""
+          };
+        });
 
         this.emails = [...this.emails, ...processedData];
 
@@ -189,9 +207,16 @@ export default class ContactEmails extends LightningElement {
   handleSort(event) {
     const { fieldName: sortedBy, sortDirection } = event.detail;
 
-    this.sortBy = sortedBy === "SubjectUrl" ? "Subject" : sortedBy;
-    this.sortDirection = sortDirection;
+    // Map datatable URL field names back to actual Apex API fields for sorting
+    if (sortedBy === "SubjectUrl") {
+      this.sortBy = "Subject";
+    } else if (sortedBy === "CaseUrl") {
+      this.sortBy = "Parent.CaseNumber";
+    } else {
+      this.sortBy = sortedBy;
+    }
 
+    this.sortDirection = sortDirection;
     this.loadEmails(true);
   }
 }
