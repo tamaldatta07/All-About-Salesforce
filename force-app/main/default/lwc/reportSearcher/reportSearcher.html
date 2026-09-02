@@ -1,0 +1,30 @@
+<template>
+    <lightning-card title="Searchable Case Report" icon-name="standard:report">
+        <div class="slds-m-around_medium slds-is-relative">
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </template>
+
+            <!-- Error Message -->
+            <template if:true={errorMessage}>
+                <div class="slds-text-color_error slds-m-bottom_medium">
+                    {errorMessage}
+                </div>
+            </template>
+
+            <!-- Search Bar -->
+            <lightning-input type="search" label="Search Report" onchange={handleSearch} class="slds-m-bottom_medium"
+                disabled={isLoading}>
+            </lightning-input>
+
+            <!-- Data Table -->
+            <template if:true={displayedData.length}>
+                <lightning-datatable key-field="id" data={displayedData} columns={columns} hide-checkbox-column>
+                </lightning-datatable>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>
